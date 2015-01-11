@@ -1,0 +1,28 @@
+﻿@model IEnumerable<WebApplication2.Models.MatchModel>
+@{
+    ViewBag.Title = "Uitslagen";
+}
+<h2>@ViewBag.Title.</h2>
+
+<table class="poule">
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.NameHomeTeam)
+            </td>
+            <td align ="right">
+                @Html.DisplayFor(modelItem => item.Goals)
+            </td>
+                <td align ="center"> - </td>
+            <td align="left">
+                @Html.DisplayFor(modelItem => item.GoalsAgainst)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NameAwayTeam)
+            </td>
+        </tr>
+    }
+</table>
+

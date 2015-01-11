@@ -1,0 +1,56 @@
+﻿@model IEnumerable<WebApplication2.Models.PouleModel>
+@{
+    ViewBag.Title = "Soccer Simulator";
+}
+
+    <table class="poule">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Country)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GamesPlayed)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Goals)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GoalsAgainst)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GoalsTotaal)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Points)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Country)
+                </td>
+                <td align="center">
+                    @Html.DisplayFor(modelItem => item.GamesPlayed)
+                </td>
+                <td align="center">
+                    @Html.DisplayFor(modelItem => item.Goals)
+                </td>
+                <td align="center">
+                    @Html.DisplayFor(modelItem => item.GoalsAgainst)
+                </td>
+                <td align="center">
+                    @Html.DisplayFor(modelItem => item.GoalsTotaal)
+                </td>
+                <td align="center">
+                    @Html.DisplayFor(modelItem => item.Points)
+                </td>
+            </tr>
+        }
+    </table>
+@using (Html.BeginForm(FormMethod.Post))
+{ 
+<input name="start" type="submit" id="Start" value="Start" />
+}

@@ -1,0 +1,50 @@
+﻿@model WebApplication2.Models.PouleModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>PouleModel</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Country)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Country)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.GamesPlayed)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.GamesPlayed)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Goals)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Goals)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Points)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Points)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

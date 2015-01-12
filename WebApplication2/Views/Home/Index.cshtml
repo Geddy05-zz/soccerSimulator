@@ -6,6 +6,9 @@
     <table class="poule">
         <tr>
             <th>
+
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Country)
             </th>
             <th>
@@ -28,7 +31,10 @@
 
         @foreach (var item in Model)
         {
-            <tr>
+            <tr class= 'pos-@Html.DisplayTextFor(modelItem => item.Position)'>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Position)
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Country)
                 </td>

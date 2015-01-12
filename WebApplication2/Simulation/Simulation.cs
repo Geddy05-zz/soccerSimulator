@@ -11,8 +11,8 @@ namespace WebApplication2.Simulation
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         private CreateModels Createmodels = new CreateModels();
-        private int[] MatchSchema = { 9, 10, 11, 12, 9, 11, 10, 12, 9, 12, 10, 11 };
-        //private int[] MatchSchema = { 1, 2, 3, 4, 1, 3, 2, 4, 1, 4, 2, 3 };
+        //private int[] MatchSchema = { 9, 10, 11, 12, 9, 11, 10, 12, 9, 12, 10, 11 };
+        private int[] MatchSchema = { 1, 2, 3, 4, 1, 3, 2, 4, 1, 4, 2, 3 };
 
         private TeamModel TeamAttack;
         private TeamModel TeamDefence;

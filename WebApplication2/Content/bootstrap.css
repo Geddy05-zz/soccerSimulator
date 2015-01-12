@@ -178,6 +178,7 @@ td,
 th {
   padding: 10px;
 }
+
 @media print {
   * {
     text-shadow: none !important;
@@ -6366,4 +6367,12 @@ input:focus {
 
 .poule {
     margin-top: 21px;
+}
+
+.pos-1 {
+ background-color: #1BF7CD;
+}
+
+.pos-2 {
+ background-color: #6BFADF;
 }

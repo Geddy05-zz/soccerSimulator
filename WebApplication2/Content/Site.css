@@ -1,17 +1,43 @@
 ﻿body {
-    padding-top: 50px;
-    padding-bottom: 20px;
+    background: url(/images/bg.jpg) no-repeat;
 }
 
-/* Set padding to keep content from hitting the edges */
+
+
+.container {
+  margin-right: auto;
+  margin-left: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+@media (min-width: 768px) {
+  .container {
+    width: 50%;
+  }
+}
+
+.container-fluid {
+  margin-right: auto;
+  margin-left: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+}
 .body-content {
     padding-left: 15px;
     padding-right: 15px;
+    background-color: rgba(255, 255, 255, 0.75);
+    border-bottom-right-radius:2em;
+    border-bottom-left-radius:2em;
 }
 
-/* Override the default bootstrap behavior where horizontal description lists 
-   will truncate terms that are too long to fit in the left column 
-*/
+.table {
+  width: 100%;
+  max-width: 100%;
+  margin-top: 21px;
+  margin-bottom: 21px;
+}
+
 .dl-horizontal dt {
     white-space: normal;
 }
@@ -21,4 +47,12 @@ input,
 select,
 textarea {
     max-width: 280px;
+}
+
+.pos-1 {
+ background-color: rgba(149, 207, 245, 0.75);
+}
+
+.pos-2 {
+ background-color: rgba(177, 221, 250, 0.75);
 }

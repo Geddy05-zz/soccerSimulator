@@ -182,6 +182,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="images\ball.gif" />
     <Content Include="images\bg.gif" />
+    <Content Include="images\bg.jpg" />
     <Content Include="images\bg_header.jpg" />
     <Content Include="images\bg_main.gif" />
     <Content Include="images\bg_navigation.gif" />

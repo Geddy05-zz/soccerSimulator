@@ -56,6 +56,11 @@
             </tr>
         }
     </table>
+<br />
+<p><strong>Poule winnaar is geworden :</strong> @ViewBag.FirstPlace</p><br/>
+<p><strong>Tweede die doorgaat is :</strong> @ViewBag.SecondPlace</p>
+
+
 @using (Html.BeginForm(FormMethod.Post))
 { 
 <input name="start" type="submit" id="Start" value="Start" />

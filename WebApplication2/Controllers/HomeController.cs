@@ -17,6 +17,9 @@ namespace WebApplication2.Controllers
         {         
             simulation.CreateGame();
 
+            ViewBag.FirstPlace = db.PouleModels.Where(p => p.Position == 1).Select(p => p.Country).Single();
+            ViewBag.SecondPlace = db.PouleModels.Where(p => p.Position == 2).Select(p => p.Country).Single();
+
             return View(db.PouleModels.OrderBy(p => p.Position));
         }
         
@@ -24,6 +27,9 @@ namespace WebApplication2.Controllers
         public ActionResult Index(string start)
         {
             simulation.StartGame();
+
+            ViewBag.FirstPlace = db.PouleModels.Where(p => p.Position == 1).Select(p => p.Country).Single();
+            ViewBag.SecondPlace = db.PouleModels.Where(p => p.Position == 2).Select(p => p.Country).Single();
 
             return View(db.PouleModels.OrderBy(p => p.Position));
         }

@@ -30,6 +30,7 @@ namespace WebApplication2.Simulation
                     if (teamA.Goals == teamB.Goals)
                     {
                         ComparerMatchresult(i);
+                        i++;
                     }
                     if (teamA.Goals > teamB.Goals)
                     {
@@ -39,13 +40,11 @@ namespace WebApplication2.Simulation
                     if (teamA.Goals < teamB.Goals)
                     {
                         teamB.Position = i + 1;
-                        if (i < SortedList.Count - 1)
-                        {
-                            teamA.Position = i + 2;
-                            i++;
-                        }
+                        teamA.Position = i + 2;
+                        if (i < SortedList.Count - 2) i++;
                     }
                 }
+                
                 else
                 {
                     teamA.Position = i + 1;
@@ -54,7 +53,14 @@ namespace WebApplication2.Simulation
                 applicationdb.PouleModels.Add(teamA);
                 applicationdb.PouleModels.Add(teamB);
             }
+            teamA = SortedList[SortedList.Count - 1];
+            if (teamA.Position < 1 || teamA.Position > 3)
+            {
+                teamA.Position = 4;
+           }
+
             applicationdb.SaveChanges();
+            applicationdb.PouleModels.Add(teamA);
         }
 
         public void RemovePoule()
@@ -91,6 +97,7 @@ namespace WebApplication2.Simulation
                 if (compareResult.Goals > compareResult.GoalsAgainst)
                 {
                     teamA.Position = i + 1;
+                    teamB.Position = i + 2;
                 }
                 else if (compareResult.Goals < compareResult.GoalsAgainst)
                 {
@@ -100,6 +107,7 @@ namespace WebApplication2.Simulation
                 else
                 {
                     teamA.Position = i + 1;
+                    teamB.Position = i + 2;
                 }
             }
         }

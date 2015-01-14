@@ -15,7 +15,7 @@ namespace WebApplication2.Simulation
         private ReportManager reportManager = new ReportManager();
 
         //
-        private int[] matchSchema = { 9, 10, 11, 12, 9, 11, 10, 12, 9, 12, 10, 11 };
+        private int[] matchSchema = { 1, 2, 3, 4, 1, 3, 2, 4, 1, 4, 2, 3 };
 
         private TeamModel teamAttack;
         private TeamModel teamDefence;

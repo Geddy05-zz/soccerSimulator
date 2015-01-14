@@ -163,45 +163,11 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MatchModelsController.cs" />
     <Compile Include="Controllers\PouleController.cs" />
-    <Compile Include="Controllers\ReportModelsController.cs" />
     <Compile Include="Controllers\TeamController.cs" />
     <Compile Include="Controllers\TeamModelsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201501081847139_InitialCreate.cs" />
-    <Compile Include="Migrations\201501081847139_InitialCreate.Designer.cs">
-      <DependentUpon>201501081847139_InitialCreate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201501081949591_PouleModel.cs" />
-    <Compile Include="Migrations\201501081949591_PouleModel.Designer.cs">
-      <DependentUpon>201501081949591_PouleModel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201501111835119_PouleModel1.cs" />
-    <Compile Include="Migrations\201501111835119_PouleModel1.Designer.cs">
-      <DependentUpon>201501111835119_PouleModel1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201501111911311_PouleModel2.cs" />
-    <Compile Include="Migrations\201501111911311_PouleModel2.Designer.cs">
-      <DependentUpon>201501111911311_PouleModel2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201501112029297_PouleModel3.cs" />
-    <Compile Include="Migrations\201501112029297_PouleModel3.Designer.cs">
-      <DependentUpon>201501112029297_PouleModel3.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201501121547235_PouleModel4.cs" />
-    <Compile Include="Migrations\201501121547235_PouleModel4.Designer.cs">
-      <DependentUpon>201501121547235_PouleModel4.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201501130927583_ReportModel.cs" />
-    <Compile Include="Migrations\201501130927583_ReportModel.Designer.cs">
-      <DependentUpon>201501130927583_ReportModel.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201501130930167_ReportModel1.cs" />
-    <Compile Include="Migrations\201501130930167_ReportModel1.Designer.cs">
-      <DependentUpon>201501130930167_ReportModel1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\GameModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -271,32 +237,6 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201501081847139_InitialCreate.resx">
-      <DependentUpon>201501081847139_InitialCreate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201501081949591_PouleModel.resx">
-      <DependentUpon>201501081949591_PouleModel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201501111835119_PouleModel1.resx">
-      <DependentUpon>201501111835119_PouleModel1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201501111911311_PouleModel2.resx">
-      <DependentUpon>201501111911311_PouleModel2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201501112029297_PouleModel3.resx">
-      <DependentUpon>201501112029297_PouleModel3.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201501121547235_PouleModel4.resx">
-      <DependentUpon>201501121547235_PouleModel4.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201501130927583_ReportModel.resx">
-      <DependentUpon>201501130927583_ReportModel.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201501130930167_ReportModel1.resx">
-      <DependentUpon>201501130930167_ReportModel1.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

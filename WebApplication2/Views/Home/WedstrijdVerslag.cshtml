@@ -1,0 +1,16 @@
+﻿@model IEnumerable<WebApplication2.Models.ReportModel>
+@{
+    ViewBag.Title = "WedstrijdVerslag";
+}
+
+<h2>WedstrijdVerslag</h2>
+<table>
+@foreach (var item in Model)
+{
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.report)
+        </td>
+    </tr>
+}
+</table>

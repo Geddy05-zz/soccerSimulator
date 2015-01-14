@@ -9,221 +9,289 @@ namespace WebApplication2.Simulation
 {
     public class Game
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
-        private CreateModels Createmodels = new CreateModels();
-        //private int[] MatchSchema = { 9, 10, 11, 12, 9, 11, 10, 12, 9, 12, 10, 11 };
-        private int[] MatchSchema = { 1, 2, 3, 4, 1, 3, 2, 4, 1, 4, 2, 3 };
+        private ApplicationDbContext applicationdb = new ApplicationDbContext();
+        private CreateModels createModels = new CreateModels();
+        //
+        private int[] matchSchema = { 9, 10, 11, 12, 9, 11, 10, 12, 9, 12, 10, 11 };
 
-        private TeamModel TeamAttack;
-        private TeamModel TeamDefence;
-        private TeamModel HomeTeam;
-        private TeamModel AwayTeam;
-        private PouleModel a;
-        private PouleModel b;
+        private TeamModel teamAttack;
+        private TeamModel teamDefence;
+        private TeamModel homeTeam;
+        private TeamModel awayTeam;
+        private PouleModel teamA;
+        private PouleModel teamB;
+        private List<string> reportMatch = new List<string>();
 
-        private int HomeScore = 0;
-        private int AwayScore = 0;
+        private int homeScore = 0;
+        private int awayScore = 0;
+        private int yellowCardProbability;
 
-        private int changeYellowCard;
+        // Random.Next() use systemclock so if we dont use a lock 
+        // the random number will almost be the same number
+        private static readonly Random random = new Random();
+        private static readonly object sLock = new object();
+        public static int RandomNumber(int min, int max)
+        {
+            lock (sLock)
+            { 
+                return random.Next(min, max);
+            }
+        }
 
         public void StartGame()
         {
             RemoveLastGame();
             CreateGame();
-            for (int i = 0; i < MatchSchema.Length; i++)
+
+            for (int i = 0; i < matchSchema.Length; i+=2)
             {
-                changeYellowCard = new Random().Next(1, 10);
-                HomeScore = 0;
-                AwayScore = 0;
-                SimulateMatch(MatchSchema[i], MatchSchema[i + 1]);
-                i++;
+                yellowCardProbability = RandomNumber(1, 10);
+                homeScore = 0;
+                awayScore = 0;
+                SimulateMatch(matchSchema[i], matchSchema[i + 1]);
             }
             decidePosistion();
         }
 
         public void RemoveLastGame()
         {
-            var allMatches = from everthing in db.MatchModels select everthing;
-            db.MatchModels.RemoveRange(allMatches);
-            var allPoule = from everthing in db.PouleModels select everthing;
-            db.PouleModels.RemoveRange(allPoule);
+            var allMatches = from everything in applicationdb.MatchModels select everything;
+            applicationdb.MatchModels.RemoveRange(allMatches);
 
-            db.SaveChanges();
+            var allPoule = from everything in applicationdb.PouleModels select everything;
+            applicationdb.PouleModels.RemoveRange(allPoule);
+            applicationdb.SaveChanges();
         }
 
         public void CreateGame()
         {
-            Createmodels.CreatePoule();
-            Createmodels.Createteams();
+            createModels.CreatePoule();
+            createModels.Createteams();
         }
 
         public void SimulateMatch(int TeamHomeId, int TeamAwayId)
         {
-            HomeTeam = db.TeamModels.Find(TeamHomeId);
-            AwayTeam = db.TeamModels.Find(TeamAwayId);
+            homeTeam = applicationdb.TeamModels.Find(TeamHomeId);
+            awayTeam = applicationdb.TeamModels.Find(TeamAwayId);
 
-            for (int i = 0; i < 90; i = i + 9)
+            for (int minute = 0 ; minute < 90; minute = minute + 9)
             {
-                choiceAttackingTeam(HomeTeam, AwayTeam, i);
-                tryToScore(i);
-                Thread.Sleep(50);
+                choiceAttackingTeam(homeTeam, awayTeam, minute);
+                tryToScore(minute);
             }
-            saveMatchResults(HomeTeam.Country, AwayTeam.Country);
+            saveMatchResults();
             savePoule();
         }
 
-        public void choiceAttackingTeam(TeamModel Home, TeamModel Away, int i)
+        public void choiceAttackingTeam(TeamModel Home, TeamModel Away, int minute)
         {
-            if (i % 2 == 0)
+            if (minute % 2 == 0)
             {
-                TeamAttack = Home;
-                TeamDefence = Away;
+                teamAttack = Home;
+                teamDefence = Away;
             }
             else
             {
-                TeamAttack = Away;
-                TeamDefence = Home;
+                teamAttack = Away;
+                teamDefence = Home;
             }
         }
 
-        public void tryToScore(int i)
+        public void tryToScore(int minute)
         {
-            int Attackpoints = TeamAttack.Attack;
-            int Defencepoints = TeamDefence.Defence;
-            int totaalpoints = Attackpoints + Defencepoints;
+            int totalpoints = teamAttack.Attack + teamDefence.Defence;
+            int choice = RandomNumber(0, totalpoints);
+            int goal = RandomNumber(0, (teamDefence.Keeper + teamAttack.Attack));
+            minute = minute + RandomNumber(1, 8);
 
-            int choice = new Random().Next(0, totaalpoints);
-            int goal = new Random().Next(0, (TeamDefence.Keeper + TeamAttack.Attack));
-
-            if (choice % changeYellowCard == 0) { choice = 0; }
-
-            if (choice > Defencepoints && goal > TeamDefence.Keeper)
+            if (choice % yellowCardProbability == 1) 
             {
-                if (TeamAttack.Country == HomeTeam.Country)
-                {
-                    HomeScore++;
-                }
-                else
-                {
-                    AwayScore++;
-                }
+                string matchEvent = minute + " " + teamAttack.Country + " krijgt gele kaart";
+                reportMatch.Add(matchEvent);
+                choice = 0;
+            }
+            if (choice > teamDefence.Defence && goal > teamDefence.Keeper)
+            {
+                goalScored(minute);
+            }
+            else if (choice + 11 < (teamDefence.Defence / 2))
+            {
+                string matchEvent = minute + " " + teamAttack.Country + " neemt een corner";
+                reportMatch.Add(matchEvent);
+            }
+            else if (choice > (teamDefence.Defence / 2)+11 && choice < teamAttack.Attack)
+            {
+                string matchEvent = minute + " " + teamDefence.Country + " krijgt een vrije trap";
+                reportMatch.Add(matchEvent);
             }
         }
 
-        public void saveMatchResults(String HomeTeam, String AwayTeam)
+        public void goalScored(int minute)
         {
-            MatchModel match = new MatchModel();
-            match.NameHomeTeam = HomeTeam;
-            match.Goals = HomeScore;
-            match.NameAwayTeam = AwayTeam;
-            match.GoalsAgainst = AwayScore;
+            if (teamAttack.Country == homeTeam.Country) 
+            {
+                homeScore++;
+            }
+            else 
+            {
+                awayScore++;
+            }
+            string matchEvent = minute + " " + teamAttack.Country + " Heeft gescoord";
+            reportMatch.Add(matchEvent);
+        }
 
-            db.MatchModels.Add(match);
-            db.SaveChanges();
+        public void saveMatchResults()
+        {
+            MatchModel matchResults = new MatchModel();
+            matchResults.NameHomeTeam = homeTeam.Country;
+            matchResults.Goals = homeScore;
+            matchResults.NameAwayTeam = awayTeam.Country;
+            matchResults.GoalsAgainst = awayScore;
 
+            applicationdb.MatchModels.Add(matchResults);
+            applicationdb.SaveChanges();
+
+            saveMatchReport();
+
+        }
+
+        public void saveMatchReport()
+        {
+            reportMatch.Add("93 Scheidsrechter fluit af");
+
+            MatchModel matchResults = applicationdb.MatchModels.FirstOrDefault(m => m.NameHomeTeam == homeTeam.Country && m.NameAwayTeam == awayTeam.Country);
+            int matchId = matchResults.ID;
+
+            foreach (string report in reportMatch)
+            {
+                ReportModel matchReport = new ReportModel();
+                matchReport.MatchId = matchId;
+                matchReport.report = report;
+
+                applicationdb.ReportModels.Add(matchReport);
+                applicationdb.SaveChanges();
+            }
+            reportMatch = new List<string>();
         }
 
         public void savePoule()
         {
-            PouleModel Home = db.PouleModels.FirstOrDefault(C => C.Country.Contains(HomeTeam.Country));
-            PouleModel Away = db.PouleModels.FirstOrDefault(C => C.Country.Contains(AwayTeam.Country));
+            PouleModel Home = applicationdb.PouleModels.FirstOrDefault(C => C.Country.Contains(homeTeam.Country));
+            PouleModel Away = applicationdb.PouleModels.FirstOrDefault(C => C.Country.Contains(awayTeam.Country));
 
             Home.GamesPlayed++;
-            Home.Goals = Home.Goals + HomeScore;
-            Home.GoalsAgainst = Home.GoalsAgainst + AwayScore;
+            Home.Goals = Home.Goals + homeScore;
+            Home.GoalsAgainst = Home.GoalsAgainst + awayScore;
             Home.GoalsTotaal = Home.Goals - Home.GoalsAgainst;
 
             Away.GamesPlayed++;
-            Away.Goals = Away.Goals + AwayScore;
-            Away.GoalsAgainst = Away.GoalsAgainst + HomeScore;
+            Away.Goals = Away.Goals + awayScore;
+            Away.GoalsAgainst = Away.GoalsAgainst + homeScore;
             Away.GoalsTotaal = Away.Goals - Away.GoalsAgainst;
 
-            if (HomeScore > AwayScore)
-            {
-                Home.Points = Home.Points + 3;
-            }
+            if (homeScore > awayScore) Home.Points = Home.Points + 3;
 
-            if (HomeScore == AwayScore)
+            if (homeScore == awayScore)
             {
                 Home.Points++;
                 Away.Points++;
             }
-            if (HomeScore < AwayScore)
-            {
-                Away.Points = Away.Points + 3;
-            }
 
-            db.SaveChanges();
+            if (homeScore < awayScore) Away.Points = Away.Points + 3;
+
+            applicationdb.SaveChanges();
         }
 
         public void decidePosistion()
         {
 
-            List<PouleModel> SortedList = db.PouleModels.OrderByDescending(p => p.Points)
+            List<PouleModel> SortedList = applicationdb.PouleModels.OrderByDescending(p => p.Points)
                                        .ThenByDescending(p => p.GoalsTotaal).ToList();
-
-            var allPoule = from everthing in db.PouleModels select everthing;
-            db.PouleModels.RemoveRange(allPoule);
-            db.SaveChanges();
+            removePoule();
 
             for (int i = 0; i < SortedList.Count-1; i++)
             {
                 int j = i+1;
-                a = SortedList[i];
-                b = SortedList[j];
+                teamA = SortedList[i];
+                teamB = SortedList[j];
 
-                if (a.Points == b.Points && a.GoalsTotaal == b.GoalsTotaal)
+                if (teamA.Points == teamB.Points && teamA.GoalsTotaal == teamB.GoalsTotaal)
                 {
-                    if (a.Goals == b.Goals)
+                    if (teamA.Goals == teamB.Goals)
                     {
                         ComparerMatchresult(i);
                     }
-                    else 
+                    if(teamA.Goals > teamB.Goals)
                     {
-                        a.Position = i + 1;
+                        teamA.Position = i + 1;
+                        teamB.Position = i + 2;
+                    }
+                    if (teamA.Goals < teamB.Goals)
+                    {
+                        teamB.Position = i + 1;
+                        if (i < SortedList.Count - 1)
+                        {
+                            teamA.Position = i + 2;
+                            i++;
+                        }
                     }
                 }
                 else
                 {
-                    a.Position = i + 1;
-                    b.Position = i + 2;
+                    teamA.Position = i + 1;
+                    teamB.Position = i + 2;
                 }
-                db.PouleModels.Add(a);
-                db.PouleModels.Add(b);
+                applicationdb.PouleModels.Add(teamA);
+                applicationdb.PouleModels.Add(teamB);
             }
-            db.SaveChanges();
+            applicationdb.SaveChanges();
+        }
+
+        public void removePoule()
+        {
+            var allPoule = from everything in applicationdb.PouleModels select everything;
+            applicationdb.PouleModels.RemoveRange(allPoule);
+            applicationdb.SaveChanges();
         }
 
         public void ComparerMatchresult(int i)
         {
             try
             {
-                MatchModel compareResult = db.MatchModels.FirstOrDefault(C => C.NameHomeTeam.Contains(a.Country) && C.NameAwayTeam.Contains(b.Country));
+                MatchModel compareResult = applicationdb.MatchModels.FirstOrDefault(C => C.NameHomeTeam.Contains(teamA.Country) && C.NameAwayTeam.Contains(teamB.Country));
                 if (compareResult.Goals > compareResult.GoalsAgainst)
                 {
-                    a.Position = i + 1;
+                    teamA.Position = i + 1;
+                    teamB.Position = i + 2;
                 }
                 if (compareResult.Goals < compareResult.GoalsAgainst)
                 {
-                    b.Position = i + 1;
-                    a.Position = i + 2;
+                    teamB.Position = i + 1;
+                    teamA.Position = i + 2;
+                }
+                else
+                {
+                    teamA.Position = i + 1;
+                    teamB.Position = i + 2;
                 }
             }
             catch
             {
-                MatchModel compareResult = db.MatchModels.FirstOrDefault(C => C.NameHomeTeam.Contains(b.Country) && C.NameAwayTeam.Contains(a.Country));
+                MatchModel compareResult = applicationdb.MatchModels.FirstOrDefault(C => C.NameHomeTeam.Contains(teamB.Country) && C.NameAwayTeam.Contains(teamA.Country));
                 if (compareResult.Goals > compareResult.GoalsAgainst)
                 {
-                    a.Position = i + 1;
+                    teamA.Position = i + 1;
                 }
-                if (compareResult.Goals < compareResult.GoalsAgainst)
+                else if (compareResult.Goals < compareResult.GoalsAgainst)
                 {
-                    b.Position = i + 1;
-                    a.Position = i + 2;
+                    teamB.Position = i + 1;
+                    teamA.Position = i + 2;
+                }
+                else
+                {
+                    teamA.Position = i + 1;
                 }
             }
         }
-
-
     }
 }

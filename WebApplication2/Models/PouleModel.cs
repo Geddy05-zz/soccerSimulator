@@ -36,4 +36,11 @@ namespace WebApplication2.Models
         public int GoalsAgainst { get; set; }
     }
 
+    public class ReportModel
+    {
+        public int ID { get; set; }
+        public int MatchId { get; set; }
+        public string report { get; set; }
+    }
+
 }

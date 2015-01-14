@@ -35,5 +35,7 @@ namespace WebApplication2.Models
         public System.Data.Entity.DbSet<WebApplication2.Models.TeamModel> TeamModels { get; set; }
 
         public System.Data.Entity.DbSet<WebApplication2.Models.MatchModel> MatchModels { get; set; }
+
+        public System.Data.Entity.DbSet<WebApplication2.Models.ReportModel> ReportModels { get; set; }
     }
 }

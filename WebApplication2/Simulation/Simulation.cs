@@ -11,6 +11,9 @@ namespace WebApplication2.Simulation
     {
         private ApplicationDbContext applicationdb = new ApplicationDbContext();
         private CreateModels createModels = new CreateModels();
+        private PouleManager pouleManager = new PouleManager();
+        private ReportManager reportManager = new ReportManager();
+
         //
         private int[] matchSchema = { 9, 10, 11, 12, 9, 11, 10, 12, 9, 12, 10, 11 };
 
@@ -18,8 +21,7 @@ namespace WebApplication2.Simulation
         private TeamModel teamDefence;
         private TeamModel homeTeam;
         private TeamModel awayTeam;
-        private PouleModel teamA;
-        private PouleModel teamB;
+
         private List<string> reportMatch = new List<string>();
 
         private int homeScore = 0;
@@ -50,7 +52,7 @@ namespace WebApplication2.Simulation
                 awayScore = 0;
                 SimulateMatch(matchSchema[i], matchSchema[i + 1]);
             }
-            decidePosistion();
+            pouleManager.DecidePosistion();
         }
 
         public void RemoveLastGame()
@@ -74,16 +76,16 @@ namespace WebApplication2.Simulation
             homeTeam = applicationdb.TeamModels.Find(TeamHomeId);
             awayTeam = applicationdb.TeamModels.Find(TeamAwayId);
 
-            for (int minute = 0 ; minute < 90; minute = minute + 9)
+            for (int minute = 0 ; minute < 90; minute = minute + 7)
             {
-                choiceAttackingTeam(homeTeam, awayTeam, minute);
-                tryToScore(minute);
+                ChoiceAttackingTeam(homeTeam, awayTeam, minute);
+                TryToScore(minute);
             }
             saveMatchResults();
             savePoule();
         }
 
-        public void choiceAttackingTeam(TeamModel Home, TeamModel Away, int minute)
+        public void ChoiceAttackingTeam(TeamModel Home, TeamModel Away, int minute)
         {
             if (minute % 2 == 0)
             {
@@ -97,7 +99,7 @@ namespace WebApplication2.Simulation
             }
         }
 
-        public void tryToScore(int minute)
+        public void TryToScore(int minute)
         {
             int totalpoints = teamAttack.Attack + teamDefence.Defence;
             int choice = RandomNumber(0, totalpoints);
@@ -110,19 +112,20 @@ namespace WebApplication2.Simulation
                 reportMatch.Add(matchEvent);
                 choice = 0;
             }
+            else if (choice > totalpoints-(teamAttack.Attack/10))
+            {
+                string matchEvent = minute + " " + teamAttack.Country + " krijgt een vrije trap";
+                reportMatch.Add(matchEvent);
+            }
             if (choice > teamDefence.Defence && goal > teamDefence.Keeper)
             {
                 goalScored(minute);
             }
-            else if (choice + 11 < (teamDefence.Defence / 2))
+            else if (choice < (teamDefence.Defence / 2)&& choice != 0)
             {
                 string matchEvent = minute + " " + teamAttack.Country + " neemt een corner";
                 reportMatch.Add(matchEvent);
-            }
-            else if (choice > (teamDefence.Defence / 2)+11 && choice < teamAttack.Attack)
-            {
-                string matchEvent = minute + " " + teamDefence.Country + " krijgt een vrije trap";
-                reportMatch.Add(matchEvent);
+                choice = 1;
             }
         }
 
@@ -151,27 +154,9 @@ namespace WebApplication2.Simulation
             applicationdb.MatchModels.Add(matchResults);
             applicationdb.SaveChanges();
 
-            saveMatchReport();
-
-        }
-
-        public void saveMatchReport()
-        {
-            reportMatch.Add("93 Scheidsrechter fluit af");
-
-            MatchModel matchResults = applicationdb.MatchModels.FirstOrDefault(m => m.NameHomeTeam == homeTeam.Country && m.NameAwayTeam == awayTeam.Country);
-            int matchId = matchResults.ID;
-
-            foreach (string report in reportMatch)
-            {
-                ReportModel matchReport = new ReportModel();
-                matchReport.MatchId = matchId;
-                matchReport.report = report;
-
-                applicationdb.ReportModels.Add(matchReport);
-                applicationdb.SaveChanges();
-            }
+            reportManager.saveMatchReport(reportMatch,homeTeam,awayTeam);
             reportMatch = new List<string>();
+
         }
 
         public void savePoule()
@@ -200,98 +185,6 @@ namespace WebApplication2.Simulation
             if (homeScore < awayScore) Away.Points = Away.Points + 3;
 
             applicationdb.SaveChanges();
-        }
-
-        public void decidePosistion()
-        {
-
-            List<PouleModel> SortedList = applicationdb.PouleModels.OrderByDescending(p => p.Points)
-                                       .ThenByDescending(p => p.GoalsTotaal).ToList();
-            removePoule();
-
-            for (int i = 0; i < SortedList.Count-1; i++)
-            {
-                int j = i+1;
-                teamA = SortedList[i];
-                teamB = SortedList[j];
-
-                if (teamA.Points == teamB.Points && teamA.GoalsTotaal == teamB.GoalsTotaal)
-                {
-                    if (teamA.Goals == teamB.Goals)
-                    {
-                        ComparerMatchresult(i);
-                    }
-                    if(teamA.Goals > teamB.Goals)
-                    {
-                        teamA.Position = i + 1;
-                        teamB.Position = i + 2;
-                    }
-                    if (teamA.Goals < teamB.Goals)
-                    {
-                        teamB.Position = i + 1;
-                        if (i < SortedList.Count - 1)
-                        {
-                            teamA.Position = i + 2;
-                            i++;
-                        }
-                    }
-                }
-                else
-                {
-                    teamA.Position = i + 1;
-                    teamB.Position = i + 2;
-                }
-                applicationdb.PouleModels.Add(teamA);
-                applicationdb.PouleModels.Add(teamB);
-            }
-            applicationdb.SaveChanges();
-        }
-
-        public void removePoule()
-        {
-            var allPoule = from everything in applicationdb.PouleModels select everything;
-            applicationdb.PouleModels.RemoveRange(allPoule);
-            applicationdb.SaveChanges();
-        }
-
-        public void ComparerMatchresult(int i)
-        {
-            try
-            {
-                MatchModel compareResult = applicationdb.MatchModels.FirstOrDefault(C => C.NameHomeTeam.Contains(teamA.Country) && C.NameAwayTeam.Contains(teamB.Country));
-                if (compareResult.Goals > compareResult.GoalsAgainst)
-                {
-                    teamA.Position = i + 1;
-                    teamB.Position = i + 2;
-                }
-                if (compareResult.Goals < compareResult.GoalsAgainst)
-                {
-                    teamB.Position = i + 1;
-                    teamA.Position = i + 2;
-                }
-                else
-                {
-                    teamA.Position = i + 1;
-                    teamB.Position = i + 2;
-                }
-            }
-            catch
-            {
-                MatchModel compareResult = applicationdb.MatchModels.FirstOrDefault(C => C.NameHomeTeam.Contains(teamB.Country) && C.NameAwayTeam.Contains(teamA.Country));
-                if (compareResult.Goals > compareResult.GoalsAgainst)
-                {
-                    teamA.Position = i + 1;
-                }
-                else if (compareResult.Goals < compareResult.GoalsAgainst)
-                {
-                    teamB.Position = i + 1;
-                    teamA.Position = i + 2;
-                }
-                else
-                {
-                    teamA.Position = i + 1;
-                }
-            }
         }
     }
 }

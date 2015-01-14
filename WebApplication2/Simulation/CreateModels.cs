@@ -37,43 +37,41 @@ namespace WebApplication2.Simulation
         {
             if (!db.TeamModels.Any())
             {
-                TeamModel Nederland = new TeamModel();
-                Nederland.Country = "Nederland";
-                Nederland.Attack = 85;
-                Nederland.Defence = 70;
-                Nederland.Keeper = 75;
-                Nederland.tactic = 90;
+                TeamModel netherlands = new TeamModel();
+                netherlands.Country = "Nederland";
+                netherlands.Attack = 85;
+                netherlands.Defence = 70;
+                netherlands.Keeper = 75;
+                netherlands.tactic = 90;
 
-                TeamModel Spanje = new TeamModel();
-                Spanje.Country = "Spanje";
-                Spanje.Attack = 85;
-                Spanje.Defence = 80;
-                Spanje.Keeper = 80;
-                Spanje.tactic = 70;
+                TeamModel spain = new TeamModel();
+                spain.Country = "Spanje";
+                spain.Attack = 85;
+                spain.Defence = 80;
+                spain.Keeper = 80;
+                spain.tactic = 70;
 
-                TeamModel Chilli = new TeamModel();
-                Chilli.Country = "Chilli";
-                Chilli.Attack = 75;
-                Chilli.Defence = 75;
-                Chilli.Keeper = 70;
-                Chilli.tactic = 70;
+                TeamModel chilli = new TeamModel();
+                chilli.Country = "Chilli";
+                chilli.Attack = 75;
+                chilli.Defence = 75;
+                chilli.Keeper = 70;
+                chilli.tactic = 70;
 
-                TeamModel Australië = new TeamModel();
-                Australië.Country = "Australië";
-                Australië.Attack = 50;
-                Australië.Defence = 70;
-                Australië.Keeper = 65;
-                Australië.tactic = 60;
+                TeamModel australia = new TeamModel();
+                australia.Country = "Australië";
+                australia.Attack = 50;
+                australia.Defence = 70;
+                australia.Keeper = 65;
+                australia.tactic = 60;
 
-                db.TeamModels.Add(Spanje);
-                db.TeamModels.Add(Nederland);
-                db.TeamModels.Add(Chilli);
-                db.TeamModels.Add(Australië);
+                db.TeamModels.Add(spain);
+                db.TeamModels.Add(netherlands);
+                db.TeamModels.Add(chilli);
+                db.TeamModels.Add(australia);
 
                 db.SaveChanges();
-
             }
         }
-
     }
 }

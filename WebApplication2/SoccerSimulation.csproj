@@ -208,7 +208,8 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Simulation\CreateModels.cs" />
-    <Compile Include="Simulation\RandomNum.cs" />
+    <Compile Include="Simulation\PouleManager.cs" />
+    <Compile Include="Simulation\ReportGame.cs" />
     <Compile Include="Simulation\Simulation.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>

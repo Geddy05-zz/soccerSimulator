@@ -14,7 +14,7 @@ namespace WebApplication2.Simulation
         private PouleManager pouleManager = new PouleManager();
         private ReportManager reportManager = new ReportManager();
 
-        //
+        // this array shows use the match schema. I use this because now we got a logical schema.
         private int[] matchSchema = { 1, 2, 3, 4, 1, 3, 2, 4, 1, 4, 2, 3 };
 
         private TeamModel teamAttack;

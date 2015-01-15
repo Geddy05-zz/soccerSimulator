@@ -1,0 +1,12 @@
+Voor de opdracht om kans te maken op stage heb ik besloten om volgens de regels van clean code te programmeren.
+
+Hierdoor staat er ook weinig tot geen commentaar in de code. De code moet namelijk voorzichzelf spreken.
+het gebruik van goede variabele namen en functie namen zijn daar door erg belangrijk.
+
+Ook heb ik geprobeerd de functies niet te groot te maken. een functie mag ook maar 1 ding doen.
+
+Mochten er nog vragen zijn dan wil ik deze graag beantwoorden.
+
+Geddy Schellevis
+geddyschellevis@gmail.com
+06-53380120

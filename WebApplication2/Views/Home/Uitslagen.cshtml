@@ -23,7 +23,7 @@
                 @Html.DisplayFor(modelItem => item.NameAwayTeam)
             </td>
             <td>
-                @Html.ActionLink("WedstrijdVerslag", "WedstrijdVerslag", new { id = item.ID })
+                @Html.ActionLink("Wedstrijd verslag", "WedstrijdVerslag", new { id = item.ID }, new { @class = "verslaglink" })
             </td>
         </tr>
     }

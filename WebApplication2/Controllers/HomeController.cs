@@ -13,6 +13,7 @@ namespace WebApplication2.Controllers
         public ApplicationDbContext db = new ApplicationDbContext();
         private Game simulation = new Game();
         private ApplicationDbContext applicationdb = new ApplicationDbContext();
+        
         public ActionResult Index()
         {         
             simulation.CreateGame();

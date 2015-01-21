@@ -9,6 +9,9 @@ namespace WebApplication2.Simulation
     public class ReportManager
     {
         private ApplicationDbContext applicationdb = new ApplicationDbContext();
+        public List<string> reportMatch = new List<string>();
+        public enum MatchEvent { yellowCard, redCard, corner, freeKick, goal };
+
         public void saveMatchReport(List<string> reportMatch,TeamModel homeTeam,TeamModel awayTeam)
         {
             reportMatch.Add("93 Scheidsrechter fluit af");
@@ -28,5 +31,36 @@ namespace WebApplication2.Simulation
             reportMatch = new List<string>();
 
         }
+
+
+        public void MatchEventReport(MatchEvent matchEvent, int minute, string teamAttack)
+        {
+            string matchEventText = " ";
+
+            switch (matchEvent)
+            {
+                case MatchEvent.yellowCard:
+                    matchEventText = minute + " " + teamAttack + " krijgt gele kaart";
+                    break;
+                case MatchEvent.redCard:
+                    matchEventText = minute + " " + teamAttack + " krijgt rode kaart";
+                    break;
+                case MatchEvent.freeKick:
+                    matchEventText = minute + " " + teamAttack + " krijgt een vrije trap";
+                    break;
+                case MatchEvent.corner:
+                    matchEventText = minute + " " + teamAttack + " neemt een corner";
+                    break;
+                case MatchEvent.goal:
+                    matchEventText = minute + " " + teamAttack + " Heeft gescoord";
+                    break;
+                default:
+                    Console.WriteLine("Default case");
+                    break;
+            }
+
+            reportMatch.Add(matchEventText);
+        }
+
     }
 }

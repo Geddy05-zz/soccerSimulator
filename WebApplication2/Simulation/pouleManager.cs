@@ -9,8 +9,8 @@ namespace WebApplication2.Simulation
     public class PouleManager
     {
         private ApplicationDbContext applicationdb = new ApplicationDbContext();
-        private PouleModel teamA;
-        private PouleModel teamB;
+        private PouleModel selectedTeam;
+        private PouleModel compareWithTeam;
 
         public void DecidePosistion()
         {
@@ -22,45 +22,45 @@ namespace WebApplication2.Simulation
             for (int i = 0; i < SortedList.Count - 1; i++)
             {
                 int j = i + 1;
-                teamA = SortedList[i];
-                teamB = SortedList[j];
+                selectedTeam = SortedList[i];
+                compareWithTeam = SortedList[j];
 
-                if (teamA.Points == teamB.Points && teamA.GoalsTotaal == teamB.GoalsTotaal)
+                if (selectedTeam.Points == compareWithTeam.Points && selectedTeam.GoalsTotaal == compareWithTeam.GoalsTotaal)
                 {
-                    if (teamA.Goals == teamB.Goals)
+                    if (selectedTeam.Goals == compareWithTeam.Goals)
                     {
                         ComparerMatchresult(i);
                         i++;
                     }
-                    if (teamA.Goals > teamB.Goals)
+                    if (selectedTeam.Goals > compareWithTeam.Goals)
                     {
-                        teamA.Position = i + 1;
-                        teamB.Position = i + 2;
+                        selectedTeam.Position = i + 1;
+                        compareWithTeam.Position = i + 2;
                     }
-                    if (teamA.Goals < teamB.Goals)
+                    if (selectedTeam.Goals < compareWithTeam.Goals)
                     {
-                        teamB.Position = i + 1;
-                        teamA.Position = i + 2;
+                        compareWithTeam.Position = i + 1;
+                        selectedTeam.Position = i + 2;
                         if (i < SortedList.Count - 2) i++;
                     }
                 }
                 
                 else
                 {
-                    teamA.Position = i + 1;
-                    teamB.Position = i + 2;
+                    selectedTeam.Position = i + 1;
+                    compareWithTeam.Position = i + 2;
                 }
-                applicationdb.PouleModels.Add(teamA);
-                applicationdb.PouleModels.Add(teamB);
+                applicationdb.PouleModels.Add(selectedTeam);
+                applicationdb.PouleModels.Add(compareWithTeam);
             }
-            teamA = SortedList[SortedList.Count - 1];
-            if (teamA.Position < 1 || teamA.Position > 3)
+            selectedTeam = SortedList[SortedList.Count - 1];
+            if (selectedTeam.Position < 1 || selectedTeam.Position > 3)
             {
-                teamA.Position = 4;
+                selectedTeam.Position = 4;
            }
 
             applicationdb.SaveChanges();
-            applicationdb.PouleModels.Add(teamA);
+            applicationdb.PouleModels.Add(selectedTeam);
         }
 
         public void RemovePoule()
@@ -74,40 +74,40 @@ namespace WebApplication2.Simulation
         {
             try
             {
-                MatchModel compareResult = applicationdb.MatchModels.FirstOrDefault(C => C.NameHomeTeam.Contains(teamA.Country) && C.NameAwayTeam.Contains(teamB.Country));
+                MatchModel compareResult = applicationdb.MatchModels.FirstOrDefault(C => C.NameHomeTeam.Contains(selectedTeam.Country) && C.NameAwayTeam.Contains(compareWithTeam.Country));
                 if (compareResult.Goals > compareResult.GoalsAgainst)
                 {
-                    teamA.Position = i + 1;
-                    teamB.Position = i + 2;
+                    selectedTeam.Position = i + 1;
+                    compareWithTeam.Position = i + 2;
                 }
                 if (compareResult.Goals < compareResult.GoalsAgainst)
                 {
-                    teamB.Position = i + 1;
-                    teamA.Position = i + 2;
+                    compareWithTeam.Position = i + 1;
+                    selectedTeam.Position = i + 2;
                 }
                 else
                 {
-                    teamA.Position = i + 1;
-                    teamB.Position = i + 2;
+                    selectedTeam.Position = i + 1;
+                    compareWithTeam.Position = i + 2;
                 }
             }
             catch
             {
-                MatchModel compareResult = applicationdb.MatchModels.FirstOrDefault(C => C.NameHomeTeam.Contains(teamB.Country) && C.NameAwayTeam.Contains(teamA.Country));
+                MatchModel compareResult = applicationdb.MatchModels.FirstOrDefault(C => C.NameHomeTeam.Contains(compareWithTeam.Country) && C.NameAwayTeam.Contains(selectedTeam.Country));
                 if (compareResult.Goals > compareResult.GoalsAgainst)
                 {
-                    teamA.Position = i + 1;
-                    teamB.Position = i + 2;
+                    selectedTeam.Position = i + 1;
+                    compareWithTeam.Position = i + 2;
                 }
                 else if (compareResult.Goals < compareResult.GoalsAgainst)
                 {
-                    teamB.Position = i + 1;
-                    teamA.Position = i + 2;
+                    compareWithTeam.Position = i + 1;
+                    selectedTeam.Position = i + 2;
                 }
                 else
                 {
-                    teamA.Position = i + 1;
-                    teamB.Position = i + 2;
+                    selectedTeam.Position = i + 1;
+                    compareWithTeam.Position = i + 2;
                 }
             }
         }

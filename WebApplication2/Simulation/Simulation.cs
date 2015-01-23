@@ -109,23 +109,23 @@ namespace WebApplication2.Simulation
 
         public void TryToScore(int minute) {
             int totalpoints = teamAttack.Attack + teamDefence.Defence;
-            int choice = RandomNumber(0, totalpoints);
-            int goal = RandomNumber(0, (teamDefence.Keeper + teamAttack.Attack));
+            int possibilityToShoot = RandomNumber(0, totalpoints);
+            int possibilityToScore = RandomNumber(0, (teamDefence.Keeper + teamAttack.Attack));
             minute = minute + RandomNumber(1, 8);
 
-            if (choice % yellowCardProbability == 1) {
+            if (possibilityToShoot % yellowCardProbability == 1) {
                 reportManager.MatchEventReport(ReportManager.MatchEvent.yellowCard, minute, teamAttack.Country);
-                choice = 0;
+                possibilityToShoot = 0;
             }
-            else if (choice > totalpoints-(teamAttack.Attack/10)) {
+            else if (possibilityToShoot > totalpoints-(teamAttack.Attack/10)) {
                 reportManager.MatchEventReport(ReportManager.MatchEvent.freeKick, minute, teamAttack.Country);
             }
-            if (choice > teamDefence.Defence && goal > teamDefence.Keeper) {
+            if (possibilityToShoot > teamDefence.Defence && possibilityToScore > teamDefence.Keeper) {
                 GoalScored(minute);
             }
-            else if (choice < (teamDefence.Defence / 2)&& choice != 0) {
+            else if (possibilityToShoot < (teamDefence.Defence / 2)&& possibilityToShoot != 0) {
                 reportManager.MatchEventReport(ReportManager.MatchEvent.freeKick, minute, teamAttack.Country);
-                choice = 1;
+                possibilityToShoot = 1;
             }
         }
 
@@ -157,27 +157,27 @@ namespace WebApplication2.Simulation
 
 
         public void SavePoule() {
-            PouleModel Home = applicationdb.PouleModels.FirstOrDefault(C => C.Country.Contains(homeTeam.Country));
-            PouleModel Away = applicationdb.PouleModels.FirstOrDefault(C => C.Country.Contains(awayTeam.Country));
+            PouleModel homeTeamDB = applicationdb.PouleModels.FirstOrDefault(C => C.Country.Contains(homeTeam.Country));
+            PouleModel awayTeamDB = applicationdb.PouleModels.FirstOrDefault(C => C.Country.Contains(awayTeam.Country));
 
-            Home.GamesPlayed++;
-            Home.Goals = Home.Goals + homeScore;
-            Home.GoalsAgainst = Home.GoalsAgainst + awayScore;
-            Home.GoalsTotaal = Home.Goals - Home.GoalsAgainst;
+            homeTeamDB.GamesPlayed++;
+            homeTeamDB.Goals = homeTeamDB.Goals + homeScore;
+            homeTeamDB.GoalsAgainst = homeTeamDB.GoalsAgainst + awayScore;
+            homeTeamDB.GoalsTotaal = homeTeamDB.Goals - homeTeamDB.GoalsAgainst;
 
-            Away.GamesPlayed++;
-            Away.Goals = Away.Goals + awayScore;
-            Away.GoalsAgainst = Away.GoalsAgainst + homeScore;
-            Away.GoalsTotaal = Away.Goals - Away.GoalsAgainst;
+            awayTeamDB.GamesPlayed++;
+            awayTeamDB.Goals = awayTeamDB.Goals + awayScore;
+            awayTeamDB.GoalsAgainst = awayTeamDB.GoalsAgainst + homeScore;
+            awayTeamDB.GoalsTotaal = awayTeamDB.Goals - awayTeamDB.GoalsAgainst;
 
-            if (homeScore > awayScore) Home.Points = Home.Points + 3;
+            if (homeScore > awayScore) homeTeamDB.Points = homeTeamDB.Points + 3;
 
             if (homeScore == awayScore){
-                Home.Points++;
-                Away.Points++;
+                homeTeamDB.Points++;
+                awayTeamDB.Points++;
             }
 
-            if (homeScore < awayScore) Away.Points = Away.Points + 3;
+            if (homeScore < awayScore) awayTeamDB.Points = awayTeamDB.Points + 3;
 
             applicationdb.SaveChanges();
         }

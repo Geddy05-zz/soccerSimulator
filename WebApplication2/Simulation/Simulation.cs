@@ -151,7 +151,7 @@ namespace WebApplication2.Simulation
             applicationdb.MatchModels.Add(matchResults);
             applicationdb.SaveChanges();
 
-            reportManager.saveMatchReport(reportManager.reportMatch, homeTeam, awayTeam);
+            reportManager.SaveMatchReport(reportManager.reportMatch, homeTeam, awayTeam);
             reportManager.reportMatch = new List<string>();
         }
 

@@ -12,7 +12,7 @@ namespace WebApplication2.Simulation
         public List<string> reportMatch = new List<string>();
         public enum MatchEvent { yellowCard, redCard, corner, freeKick, goal };
 
-        public void saveMatchReport(List<string> reportMatch,TeamModel homeTeam,TeamModel awayTeam)
+        public void SaveMatchReport(List<string> reportMatch,TeamModel homeTeam,TeamModel awayTeam)
         {
             reportMatch.Add("93 Scheidsrechter fluit af");
 
